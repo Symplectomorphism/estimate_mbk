@@ -11,7 +11,7 @@ close(file)
 
 m, b, k = (data[4,end], data[5, end], 0.0)
 tend = data[1,end]*1/2
-A, φ = (0.3, 0*π/180)
+A, φ = (0.3, 180*π/180)
 n_freq = 3
 ω(t) = π*sum( (1-(k-1)/n_freq)*sin(k*t) for k in 1:n_freq )
 # ω(t) = 2*π*0.3*t
@@ -23,7 +23,7 @@ xref(t) = A*sin(ω(t) + φ)
 
 # # Parabola
 # xref(t) = 1/2*t*t
-# 
+
 # # Triangle
 # period = 1.0
 # xref(t) = 2*abs(t/period - floor(t/period+1/2))
@@ -39,10 +39,6 @@ v(x, t) = xrefdot(t) - λ*xtilde(x, t)
 a(x, t) = xrefddot(t) - λ*xtildedot(x, t)
 Y(x, t) = [a(x, t), v(x, t), x[1]]
 u(x, t) = dot(Y(x,t), x[3:5]) - c*r(x, t)
-# u(x, t) = x[3]*(xrefddot(t) - λ*xtildedot(x, t)) + x[4]*x[2] + x[5]*x[1] - c*r(x, t)
-# f(x, t) = -r(x, t)*(xrefddot(t) - λ*xtildedot(x, t))
-# g(x, t) = -r(x, t)*x[2]
-# h(x, t) = -r(x, t)*x[1]
 
 function eom!(dx, x, p, t)
     dx[1] = x[2]
@@ -51,9 +47,6 @@ function eom!(dx, x, p, t)
 #     dx[4] = (x[4] > 0 ? g(x,t) : 1)
 #     dx[5] = (x[5] > 0 ? h(x,t) : 1)
     dx[3:5] = -Γ\Y(x, t)*r(x,t)
-#     dx[3] = f(x,t)
-#     dx[4] = g(x,t)
-#     dx[5] = h(x,t)
 end
 
 x0 = [0, 0, -0.5, -0.25, -1.0]
@@ -78,8 +71,8 @@ plot!(sol.t, xtildedot.(sol.u, sol.t), linewidth=2, label=L"\frac{d\tilde{x}}{dt
 plot!(sol.t, m.-getindex.(sol.u, 3), linewidth=2, label=L"\tilde{m}", legendfontsize=12)
 plot!(sol.t, b.-getindex.(sol.u, 4), linewidth=2, label=L"\tilde{b}", legendfontsize=12)
 plot!(sol.t, k.-getindex.(sol.u, 5), linewidth=2, label=L"\tilde{k}", legendfontsize=12)
-savefig(p, "adaptationrule2.pdf")
-savefig(p, "adaptationrule2.png")
+# savefig(p, "adaptationrule2.pdf")
+# savefig(p, "adaptationrule2.png")
 
 # p = plot(sol.t, xtilde.(sol.u, sol.t), linewidth=1, label=L"\tilde{x}", legendfontsize=12)
 # plot!(sol.t, xtildedot.(sol.u, sol.t), linewidth=1, label=L"\frac{d\tilde{x}}{dt}", legendfontsize=12)
