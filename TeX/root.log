@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.15.0 (TeX Live 2022)  (format=lualatex 2022.12.29)  29 APR 2023 23:23
+This is LuaHBTeX, Version 1.15.0 (TeX Live 2022)  (format=lualatex 2022.12.29)  29 APR 2023 23:25
  restricted system commands enabled.
  file:line:error style messages enabled.
 **root.tex
@@ -1070,15 +1070,15 @@ Package rerunfilecheck Info: File `root.out' has not changed.
 
 Here is how much of LuaTeX's memory you used:
  30044 strings out of 478384
- 156265,1977958 words of node,token memory allocated
+ 156260,1977958 words of node,token memory allocated
  2635 words of node memory still in use:
    47 hlist, 11 vlist, 12 rule, 22 math, 69 glue, 38 kern, 2 sub_mlist, 51 glyph, 135 attribute, 67 glue_spec, 69 attribute_list, 2 write nodes
-   avail lists: 1:1,2:2119,3:583,4:185,5:1152,6:102,7:13475,8:71,9:2293,10:11,11:792
+   avail lists: 2:2113,3:577,4:185,5:1146,6:99,7:13493,8:71,9:2287,10:18,11:807
  48700 multiletter control sequences out of 65536+600000
  160 fonts using 11261895 bytes
  110i,20n,118p,628b,446s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on root.pdf (2 pages, 332210 bytes).
+Output written on root.pdf (2 pages, 332326 bytes).
 
 PDF statistics: 132 PDF objects out of 1000 (max. 8388607)
  106 compressed objects within 2 object streams
