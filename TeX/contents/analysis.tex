@@ -40,8 +40,9 @@ law~\eqref{eq:ctrl_law} into the system model~\eqref{eq:eom} leads to
 \end{equation}
 %
 The parameter estimate $\hat{\theta}$ may be computed using standard methods of
-adaptive control such as gradients or least squares. For example, using the
-gradient update law
+adaptive control such as gradients or least squares. For example, for a positive
+definite matrix $\Gamma$ of appropriate dimensions, we can use the gradient
+update law
 %
 \begin{equation}
     \dot{\hat{\theta}} = -\Gamma^{-1}Y^\top(x, \dot{x}, a, v)r.

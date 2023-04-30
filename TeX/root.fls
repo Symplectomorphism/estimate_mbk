@@ -673,8 +673,6 @@ INPUT ./figures/adaptationrule2.pdf
 INPUT ./figures/adaptationrule2.pdf
 INPUT ./contents/conclusion.tex
 INPUT ./contents/conclusion.tex
-INPUT ./root.bbl
-INPUT ./root.bbl
 INPUT ./ieee-css-logo-abrv.eps
 INPUT ./ieee-css-logo-abrv-eps-converted-to.pdf
 INPUT ./ieee-css-logo-abrv-eps-converted-to.pdf
@@ -682,6 +680,8 @@ INPUT /usr/local/texlive/2022/texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
 INPUT /usr/local/texlive/2022/texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
 INPUT /usr/local/texlive/2022/texmf-dist/fonts/tfm/adobe/helvetic/phvr8r.tfm
 INPUT /usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map
+INPUT ./root.bbl
+INPUT ./root.bbl
 INPUT ./root.aux
 INPUT ./root.out
 INPUT /usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
