@@ -84,18 +84,17 @@ $(\tilde{x}, \dot{\tilde{x}}, \tilde{\theta}) = (0,0,0)$. Therefore, invoking
 Corollary 4.1 of~\cite{khalil2015nonlinear} proves that all the errors converge
 to zero.
 %
-To this end, for any solution that belongs identically to $S$, the system
+Indeed, for any solution that belongs identically to $S$, the system
 dynamics yields \[ \tilde{m}\ddot{x}_r + \tilde{b}\dot{x}_r + \tilde{k}x_r
 \equiv 0, \qquad \dot{\tilde{m}} \equiv \dot{\tilde{b}} \equiv \dot{\tilde{k}}
 \equiv 0. \] 
 %
-Excite several frequencies by choosing 
+We can excite several frequencies by choosing 
 \begin{align*}
     x_r(t) &= A\sin{\left(\omega(t) + \varphi\right)} \\
     \omega(t) &= \sum_{k=1}^n \left(1-\frac{k-1}{n}\right)\sin{k t}
 \end{align*}
 %
-for some constants $A > 0$, $n \in \mathbb{N}$ and $\varphi$. Choosing $n$
-sufficiently large, we excite enough frequencies so that $\tilde{\theta}
-\rightarrow 0$, making the origin of $(\tilde{x}, \dot{\tilde{x}},
-\tilde{\theta})$ globally asymptotically stable.
+for some constants $\varphi$, $A > 0$, and a sufficiently large $n \in
+\mathbb{N}$ This coaxes $\tilde{\theta} \rightarrow 0$, making the origin of
+$(\tilde{x}, \dot{\tilde{x}}, \tilde{\theta})$ globally asymptotically stable.
