@@ -1,0 +1,137 @@
+\appendix
+
+\newcommand*{\bbU}{\mathbb{U}}
+
+\section{Supplementary Stability Discussions}
+
+\subsection{Proof of Proposition~\ref{prop:control_continuous}}
+\label{appendix:proof_control_continuous}
+
+\begin{proof}
+    Let $\bbU = \bbU(\theta)$ denote the right side of
+    equation~\eqref{eq:Gues}. 
+    %
+    In this notation, the objective function of~\eqref{eq:finite_optim}
+    is the squared norm of $G^{\perp} \bbU$. 
+    %
+    Let $(\cdot)^{(k)}$ denote the $k^{\textrm{th}}$ iteration of the
+    optimization algorithm.
+    %
+    Since 
+    $J^{(k)} \to 0,\, \bbU^{(k)} \to \bbU^{\star}$, 
+    and
+    $\theta^{(k)} \to \theta^{\star}$, 
+    there exists an integer $K>0$ such that when $k > K$, the following are true:
+    %
+    \begin{enumerate}%[label=(\roman*),topsep=-6pt, partopsep=0pt]
+        \item $0 \leq J^{(k)} < \delta_1,$
+        \item $0 \leq \left\| \bbU^{(k)} - \bbU^{\star }\right\| < \delta_2,$
+        \item $0 \leq \left\| \theta^{(k)} - \theta^{\star }\right\|  < \delta_3$.
+    \end{enumerate}
+    % 
+    Since $G^{\dagger} (q) = \left( G^{\top}(q) G(q) \right)^{-1} G^{\top}(q)$ is a
+    continuous function of $q$, and $ u_{es}^\theta = G^{\dagger} \bbU $ is a linear in
+    $\bbU$, it follows that for all $\epsilon > 0,\; \exists \delta_2 > 0$ such that
+    %
+    $ \left\| G^{\dagger} \bbU^{(k)} - G^{\dagger} \bbU^{\star} \right\| < \epsilon $ 
+    whenever 
+    $ \left\| \bbU^{(k)} - \bbU^{\star} \right\| < \delta_2 $.
+    %
+    The claim of the proposition is demonstrated by noting that $u_{es}^\theta =
+    G^{\dagger} \bbU$ and $u_{es}^{\theta^\star} = G^{\dagger} \bbU^{\star}$. 
+\end{proof}
+
+
+\subsection{Stability of The Control System Given by~\eqref{eq:hamiltonian_dynamics} Under The Control Law $u^\theta$}
+\label{appendix:stability_continuity}
+
+\begin{prop}
+    The Hamiltonian system~\eqref{eq:hamiltonian_dynamics} enters a neighborhood
+    of $(q^\star, 0)$ upon the application of $u^\theta$ as long as the optimal
+    value of the optimization problem~\eqref{eq:finite_optim} is sufficiently small.
+    \label{prop:continuity_neighborhood}
+\end{prop}
+
+\begin{proof}
+    Let $\theta^\star$ denote an optimal solution of the
+    problem~\eqref{eq:finite_optim} so that $G^{\perp} \bbU^{\theta^\star} = 0$,
+    and let the corresponding control law be denoted by $u^{\theta^\star}$.
+    %
+    By Proposition~\ref{prop:lyapunov}, the control law $u^{\theta^\star}$
+    asymptotically stabilizes $x^\star = (q^\star, 0)$.  
+    %
+    By Proposition~\ref{prop:control_continuous}, we know that $u^\theta$ is a
+    continuous function of the optimal value $J$.
+    %
+    It is well-known that the solution of the dynamical
+    system~\eqref{eq:hamiltonian_dynamics} is a continuous function of $u$,
+    hence it is also a continuous function of the parameters
+    $\theta$~\cite{hartman2002ordinary}.
+
+    Combining these continuity results, we conclude that there exists a time
+    horizon $T > 0$ such that the flow $\phi \left( t; u^\theta(x) \right)$ of
+    the ODE~\eqref{eq:hamiltonian_dynamics} under the application of $u^\theta$
+    satisfies $ \phi ( T ) \in B_r(x^\star)$, where $B_r(x)$ denotes a ball
+    of radius $r$ around $x$. In this context, the radius $r$ is a function of
+    the tolerance of the optimization algorithm.
+\end{proof}
+
+% \begin{remark}
+%     % Given a control law that asymptotically stabilizes a linearization of the
+%     % system~\eqref{eq:hamiltonian_dynamics} at $x^\star$, the application of the
+%     % learning-based IDA-PBC control law $u^\theta$ 
+
+%     To achieve asymptotic stability of $x^\star$, the learning-based IDA-PBC
+%     control law $u^\theta$ can be combined with a standard linear controller,
+%     e.g. Linear Quadratic Regulator (LQR), which asymptotically stabilizes a
+%     linearization of the system~\eqref{eq:hamiltonian_dynamics} at $x^\star$.
+%     %
+%     In Proposition~\ref{prop:control_continuous} we have shown that the
+%     closed-loop trajectories of~\eqref{eq:hamiltonian_dynamics} passes through a
+%     neighborhood of $x^\star$.
+%     %
+%     Suppose the region of attraction of LQR contains $B_{r}(x^\star)$. 
+%     %
+%     Choose $\delta_2$ sufficiently small such that $\exists T > 0$ with
+%     $\phi(T) \in B_{r}(x^\star)$. 
+%     %
+%     This guarantees that the states asymptotically converge to $x^\star$ as $t
+%     \to \infty$ under the application of $u^\theta$ when $x \not\in
+%     B_r(x^\star)$ and LQR when $x \in B_r(x^\star)$.
+% \end{remark}
+
+\begin{prop}
+    % Given a control law that asymptotically stabilizes a linearization of the
+    % system~\eqref{eq:hamiltonian_dynamics} at $x^\star$, the application of the
+    % learning-based IDA-PBC control law $u^\theta$ 
+
+    % To achieve asymptotic stability of $x^\star$, the learning-based IDA-PBC
+    % control law $u^\theta$ can be combined with a standard linear controller
+    % $\hat{u}(x)$, for instance the Linear Quadratic Regulator (LQR), which asymptotically
+    % stabilizes a linearization of the system~\eqref{eq:hamiltonian_dynamics} at
+    % $x^\star$.
+
+    The learning-based \idapbc{} control law $u^\theta$ can be combined with a
+    linear stabilizing controller $\hat{u}$, such as the Linear Quadratic
+    Regulator (LQR), in order to asymptotically stabilize
+    system~\eqref{eq:hamiltonian_dynamics} at $x^\star$.
+\end{prop}
+
+\begin{proof}
+    In Proposition~\ref{prop:continuity_neighborhood} we have shown that the
+    closed-loop trajectories of~\eqref{eq:hamiltonian_dynamics} passes through
+    a neighborhood $B_{r}(x^\star)$, and $r$ is a continuous function of the
+    optimization precision.
+    %
+    Suppose the region of attraction of the linear control law $\hat{u}(x)$
+    contains $B_{\hat{r}}(x^\star)$. 
+    %
+    Choose $\delta_2$ sufficiently small such that $\exists T > 0$ with
+    $\phi(T) \in B_{\hat{r}}(x^\star)$. 
+    %
+    This guarantees that the trajectories of~\eqref{eq:hamiltonian_dynamics}
+    asymptotically converge to $x^\star$ as $t \to \infty$ under the application
+    of $u^\theta$ whenever $x \not\in B_{\hat{r}}(x^\star)$ and $\hat{u}$ whenever $x
+    \in B_{\hat{r}}(x^\star)$.
+\end{proof}
+

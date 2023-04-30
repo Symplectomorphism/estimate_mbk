@@ -1,0 +1,99 @@
+\section{Analysis} 
+\label{sec:analysis}
+
+\noindent Consider the scalar linear system with equations of motion given by
+the ODE
+%
+\begin{equation}
+    m \ddot{x} + b\dot{x} + kx = u(x, \dot{x}),
+    \label{eq:eom}
+\end{equation}
+%
+where $u(x, \dot{x})$ is a control input that is to be determined for tracking.
+We are uncertain of the constant parameters $\theta = \bmat{m & b & k}^\top$,
+whose estimates are denoted by $\hat{\theta} \in \mathbb{R}^3$. Let us introduce
+the errors in the position $x$, and parameters $\theta$ to be \[ \tilde{x} = x -
+x_r, \quad \tilde{\theta} = \theta - \hat{\theta}, \] where $x_r$ is a reference
+signal for the motion of the mechanical system. Inspired by Chapter 9
+of~\cite{spong2020robot}, let us choose the control input according to 
+\begin{align}
+    \begin{split}
+        u(x, \dot{x}) &= Y(x, \dot{x}, a, v)\hat{\theta} - cr, \\
+        Y(x, \dot{x}, a, v) &= \bmat{a & v & x},
+    \end{split}
+    \label{eq:ctrl_law}
+\end{align}
+%
+where the quantities $v$, $a$, and $r$ are given as
+\begin{align*}
+    v &= \dot{x}_r - \lambda \tilde{x}, \\
+    a &= \dot{v} = \ddot{x}_r - \lambda \dot{\tilde{x}}, \\
+    r &= \dot{x} - v = \dot{\tilde{x}} + \lambda \tilde{x},
+\end{align*}
+%
+where $c, \lambda > 0$ are constant gains. Substituting the control
+law~\eqref{eq:ctrl_law} into the system model~\eqref{eq:eom} leads to
+%
+\begin{equation}
+    m\dot{r} + (b+c)r = -Y\tilde{\theta}.
+    \label{eq:control_applied}
+\end{equation}
+%
+The parameter estimate $\hat{\theta}$ may be computed using standard methods of
+adaptive control such as gradients or least squares. For example, using the
+gradient update law
+%
+\begin{equation}
+    \dot{\hat{\theta}} = -\Gamma^{-1}Y^\top(x, \dot{x}, a, v)r.
+    \label{eq:param_update}
+\end{equation}
+
+Consider the Lyapunov function candidate
+%
+\begin{equation*}
+    V(\tilde{x}, \dot{\tilde{x}}, \tilde{\theta}) = \frac{1}{2}mr^2 + 
+    c\lambda\tilde{x}^2 + \frac{1}{2}\tilde{\theta}^\top\Gamma\tilde{\theta}.
+%     \label{eq:lyap_cand}
+\end{equation*}
+%
+This is a positive definite function over the space of $\pmat{\tilde{x},
+\dot{\tilde{x}}, \tilde{\theta}}$. We take the time derivative of the Lyapunov
+function candidate and substitute from the closed-loop system
+dynamics~(\ref{eq:control_applied}, \ref{eq:param_update}). We suppress its
+functional dependence for brevity.
+%
+\begin{align*}
+    \dot{V} &= mr\dot{r} + 2c\lambda \tilde{x}\dot{\tilde{x}} +
+    \tilde{\theta}^\top\Gamma\dot{\tilde{\theta}} \\
+            &= r\left(-(b+c)r - Y\tilde{\theta}\right) + 2c\lambda
+            \tilde{x}\dot{\tilde{x}} + \tilde{\theta}^\top Y^\top r \\
+            &= -c\lambda^2\tilde{x}^2 - c\dot{\tilde{x}}^2 - br^2 \leq 0.
+\end{align*}
+%
+Hence the set $\Omega_c = \{(\tilde{x}, \dot{\tilde{x}}, \tilde{\theta}):
+V(\tilde{x}, \dot{\tilde{x}}, \tilde{\theta}) \leq c \}$ is positively
+invariant for any $c > 0$. Moreover, $\tilde{x}, \dot{\tilde{x}}, r \rightarrow
+0$ as $t \rightarrow \infty$. This means $u(x, \dot{x}) \rightarrow
+\hat{m}\ddot{x}_r + \hat{b}\dot{x}_r + \hat{k}x_r$ (since $x \rightarrow x_r$).
+We identify $S = \{(\tilde{x}, \dot{\tilde{x}}, \tilde{\theta}): (\tilde{x},
+\dot{\tilde{x}}) = 0\}$ as the set of all points in $\Omega_c$ where $\dot{V} =
+0$. We now show that for a specific choice of the reference signal $x_r(t)$, no
+solution can stay identically in $S$ other than the trivial solution
+$(\tilde{x}, \dot{\tilde{x}}, \tilde{\theta}) = (0,0,0)$ and invoke Corollary
+4.1 of~\cite{khalil2015nonlinear} proving that the errors converge to zero.
+
+To this end, for any solution that belongs identically to $S$, the system
+dynamics yields \[ \tilde{m}\ddot{x}_r + \tilde{b}\dot{x}_r + \tilde{k}x_r
+\equiv 0, \qquad \dot{\tilde{m}} \equiv \dot{\tilde{b}} \equiv \dot{\tilde{k}}
+\equiv 0. \] 
+%
+Excite several frequencies by choosing 
+\begin{align*}
+    x_r(t) &= A\sin{\left(\omega(t) + \varphi\right)} \\
+    \omega(t) &= \sum_{k=1}^n \left(1-\frac{k-1}{n}\right)\sin{k t}
+\end{align*}
+%
+for some constants $A > 0$, $n \in \mathbb{N}$ and $\varphi$. Choosing $n$
+sufficiently large, we excite enough frequencies so that $\tilde{\theta}
+\rightarrow 0$, making the origin of $(\tilde{x}, \dot{\tilde{x}},
+\tilde{\theta})$ globally asymptotically stable.

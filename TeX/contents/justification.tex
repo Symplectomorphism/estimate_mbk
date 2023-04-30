@@ -1,0 +1,275 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Theoretical Justification and Motivation for Bayesian Learning} \label{ssec:justification}
+%
+One of our primary contributions in this work is to demonstrate the improved
+robustness properties of Bayesian learning over point-estimates of the
+neural-network-based Lyapunov function and controller. In this section, we
+demonstrate this claim on a toy example, where closed-form calculation of the
+point-estimates and posterior distributions for the optimal controller may be
+undertaken.
+
+\subsection{Optimal Control of an Uncertain Control System}
+%
+Let us consider the first-order scalar control system, whose drift vector field
+is uncertain: 
+%
+\begin{equation} \begin{cases} \dot{x} = px + u, \\ u(x) = \theta x, \\ x(0) =
+x_0.  \end{cases} \label{eq:first-order} \end{equation}
+%
+We assume that $p \sim \mc{N}\left(\hat{p}, \sigma_p^2\right)$ where $\hat{p}$
+designates our best prior point estimate of the system parameter $p$ and
+$\sigma_p > 0$ quantifies the uncertainty in the knowledge of the system
+parameter. The controller is set to be linear in the state $x \in \mathbb{R}$
+with its only parameter $\theta \in \mathbb{R}$ to be determined through
+learning/optimization. Without loss of generality, we will take the initial
+condition $x_0 = 1$. The performance index to be optimized for determining the
+best control parameter $\theta$ is
+%
+\begin{equation} \mc{J} = \int_0^T \left(\frac{1}{2}qx(t)^2 + \frac{1}{2}ru(t)^2 \right) dt,
+\label{eq:perfind} \end{equation}
+%
+where $T$ is the control horizon and $q \geq 0$ and $r > 0$ are design
+parameters. We solve the control system~\eqref{eq:first-order} to find $x(t) =
+e^{(p+\theta)t}$ and plug this into the performance index~\eqref{eq:perfind}
+along with the form selected for the controller. Performing the integration over
+time and letting $T \to \infty$, assuming that $p+\theta < 0$ then yields the
+infinite-horizon optimal cost functional
+% %
+% \begin{equation*} \mc{J} = -\frac{1}{4}\frac{q+r\theta^2}{(p+\theta)}\left( 1 - 
+% e^{2T(p+\theta)} \right).  \end{equation*}
+% %
+% Assuming that $p+\theta < 0$, we let $T \to \infty$ to obtain the infinite-time
+% optimal cost functional
+% %
+\begin{equation} \mc{J}_\infty = -\frac{1}{4}\frac{q+r\theta^2}{p+\theta}.
+\label{eq:inf-time-integrated-cost} \end{equation}
+%
+The optimal control parameter $\theta$ may be found as the appropriate root of
+the variation  $\mc{J}_{\infty,\theta}$ of $\mc{J}_\infty$. 
+%
+\begin{align} 
+    \begin{split} 
+            \mc{J}_{\infty,\theta} &= -\frac{r}{4}\frac{(p+\theta)^2 - \left(p^2
+        + \nicefrac{q}{r}\right)}{p+\theta} = 0, \\ 
+        \therefore \theta^\star &= g(p) :=-p - \sqrt{p^2 + \nicefrac{q}{r}}, \\
+        &\hspace{2mm} g^{-1}(\theta) = \frac{q}{2r\theta} - \frac{\theta}{2}.
+    \end{split} 
+    \label{eq:optimal_theta} 
+\end{align}
+%
+The fact that $p \sim \mc{N}(\hat{p}, \sigma_p^2)$ implies that the optimal
+control parameter has the probability density function
+%
+\begin{align*} 
+    f_{\theta^\star}(\theta^\star) &= f_p\left(g^{-1}(\theta^\star)\right)
+        \abs{\frac{d}{d\theta}g^{-1}(\theta^\star)} \\ &= \frac{1}{\sigma_p
+        \sqrt{2\pi}}\left(\frac{1}{2}\left(1+\frac{q}{r{\theta^\star}^2}\right)\right)
+        \times \\ &\hspace{8mm} \exp{\left\{-\frac{1}{2\sigma_p^2}\left(
+        \frac{q}{2r\theta^\star} - \frac{\theta^\star}{2} - \hat{p}
+        \right)^2\right\}}, 
+\end{align*}
+%
+where $f_p$ is the Gaussian probability density function with mean $\hat{p}$ and
+variance $\sigma_p^2$. 
+
+We can further eliminate the control parameter from the
+expression for the optimal cost function $\mc{J}_\infty$ by
+substituting for $\theta$ from
+equation~\eqref{eq:optimal_theta}, yielding 
+%
+\begin{align*}
+\mc{J}_\infty^\star = &h(p) := \frac{r}{2}\left( p +
+\sqrt{p^2 + \nicefrac{q}{r}} \right), \\
+&h^{-1}(\mc{J}^\star) = \frac{\mc{J}^\star}{r} -
+\frac{q}{4\mc{J}^\star}.
+\end{align*}
+%
+Hence, the distribution of the optimal cost conditioned on the system parameter
+$p$ is given by
+%
+\begin{align*} 
+    f_{\mc{J}^\star}(\mc{J}^\star) &=
+        f_p\left(h^{-1}(\mc{J}^\star)\right)
+        \abs{\frac{d}{d\theta}h^{-1}(\mc{J}^\star)} \\ &= \frac{1}{\sigma_p
+                \sqrt{2\pi}}\left(\frac{1}{r} +
+                \frac{q}{4{\mc{J}^\star}^2}\right) \times \\ &\hspace{8mm}
+                \exp{\left\{ -\frac{1}{2\sigma_p^2} \left(
+        \frac{\mc{J}^\star}{r} - \frac{q}{4\mc{J}^\star} -
+        \hat{p}\right)^2\right\}}.
+\end{align*}
+%
+Notice that the distribution of both the optimal control parameter and the
+optimal cost are elements of the exponential family that are not Gaussian. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Takeaways from the Toy Problem}
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=\linewidth]{./figures/optimal-dist.eps}
+    \caption{The optimal control parameter distribution given that the system
+    parameter $p$ is normally distributed with mean $\hat{p} = 5$ and $\sigma_p
+    = 5$. The red and black arrows respectively indicate the optimal control
+    parameter without considering the randomness of $p$, and the expected value
+    of the optimal control parameter distribution.}
+    \label{fig:optimal_dist}
+\end{figure}
+
+%
+% There are several advantages of employing Bayesian inference to find the optimal
+% control parameter $\theta$ as the toy example in this subsection supports. 
+% %
+% Note that the optimal control parameter and cost derived for this system whose
+% model is assumed to be known perfectly without measurement noise are given by
+% $\theta_d^\star = -6.162$ and $\mc{J}_d^\star := \mc{J}(\theta_d^\star) =
+% 3.081$.  
+% %
+% This deterministic performance estimate is greatly overconfident when
+% uncertainties in the system parameter and measurement are present. 
+% %
+% For example, if $\sigma = \nicefrac{1}{10}$ and $\sigma_p =
+% \nicefrac{\hat{p}}{5} = \nicefrac{6}{10}$ then the expected cost with this
+% controller parameter is, in fact, $\mathbb{E}\mc{J} = 14.907$ and the
+% overconfidence is an increasing function of both kinds of uncertainties.
+
+% The deterministic optimal controller certainly yields a controller parameter
+% $\theta_d^\star$ that yields a stable system for a range of values for the
+% system parameter $p$. In the numerical example, even if our best belief
+% $\hat{p}$ of $p$ is erroneous by $100\%$, this controller will stabilize the
+% system assuming no measurement noise. However, consider the situation where we
+% are pretty certain about the system parameter. Then, in the presence of
+% measurement noise, this controller parameter induces a much larger expected cost
+% than the optimal controller parameter, $\theta_s^\star$ that Bayesian inference
+% yields (which has smaller magnitude, i.e., $\abs{\theta_s^\star} <
+% \abs{\theta_d^\star}$). On the flip side, if the system parameter uncertainty is
+% large, (e.g. $\sigma_p > \nicefrac{\hat{p}}{2}$), then, again, Bayesian
+% inference is able to account for this fact to yield a controller parameter that
+% is more robust. In this case, the situation is reversed and we find out
+% $\abs{\theta_d^\star} < \abs{\theta_s^\star}$. Clearly, $\theta_s^\star$
+% stabilizes the system for a wider range of the true values of the system
+% parameter than $\theta_d^\star$ does. When both measurement and system
+% parameter uncertainties are present, Bayesian inference is able to precisely
+% strike the tradeoff between these competing uncertainties and yield controller
+% parameter that results in a much better expected cost than a deterministic
+% optimization does.
+
+There are several advantages of employing Bayesian learning to find the optimal
+control parameter $\theta$ as the toy example in this subsection supports. 
+%
+In order to derive some quantitative results, let us assign some numerical
+values to the parameters that define the optimal cost function $(q,r) = (100, 1)$, our best
+guess $\hat{p} = 5$ of the system parameter $p$ and its standard deviation $\sigma_p = 5$.
+
+
+The optimal control parameter and cost derived for this system whose model is
+assumed to be known perfectly are given by $\hat{\theta}^\star = -16.180$ with
+the corresponding estimated cost $\hat{\mc{J}}^\star = 8.090$.
+%
+This deterministic performance estimate turns out to be \textit{overconfident} when
+uncertainties in the system parameter are present. 
+%
+For example, if the prior knowledge on the distribution of the system parameter
+$p$ is utilized, the expected value of the controller parameter is found as
+$\mathbb{E}(\theta^\star) = -17.046$ and the corresponding expected cost is
+$\mathbb{E}(\mc{J}) = 8.523$. 
+%
+The controller from the deterministic training/optimization is not only
+overconfident about its performance; but also is less robust against modeling
+errors, as the Bayesian learning yields a closed-loop stable system for a wider
+range of values of $p$.
+
+Finally, Figure~\ref{fig:optimal_dist} shows the optimal control parameter
+distribution given that the system parameter $p$ is normally distributed with
+mean $\hat{p} = 5$, standard deviation $\sigma_p = 5$.
+%
+This figure also shows the mean values of the optimal control distribution with
+the black arrow and the optimal control parameter a deterministic approach would
+yield in red. 
+%
+We notice that the Bayesian learning that yields the optimal control parameter
+distribution is more concerned about system stability due to the uncertainty in
+the parameter $p$, a feat that the deterministic training may not reason about.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% \subsection{Overall Training Flow}
+% \label{ssec:flowchart}
+
+
+% \begin{figure*}[t]
+%     % \centering
+%     \small
+%     \begin{tikzpicture}[node distance=2cm]
+%         \node (start) [startstop] {Start};
+%         \node (in1) [io, below of=start, yshift=0.85cm] {Input: system model and neural net architecture};
+%         \node (dec1) [decision, right of=in1, xshift=2.4cm] {
+%             % \begin{tabular}{c}
+%                 (i) \textsc{NeuralIdaPbc}\\%
+%                 (ii) \textsc{Uninformative}
+%             % \end{tabular}
+%         };
+%         \node (pro1) [process, right of=dec1, yshift=1.5cm, xshift=1.5cm] {Deterministic \textsc{NeuralIdaPbc} training};
+%         % \node (pro2) [process, right of=dec1, yshift=-1.5cm, xshift=1.5cm] {Deterministic \textsc{NeuralIdaPbc} training};
+%         \node (pro3) [process, right of=dec1, xshift=3.35cm] {Bayesian training};
+%         \node (out1) [io, right of=pro3, xshift=1.75cm] {Output: a neural net Lyapunov function and controller; probability distributions over their weights};
+%         \node (stop) [startstop, below of=out1, yshift=0.1cm] {Stop};
+        
+%         \draw [arrow] (start) -- (in1);
+%         \draw [arrow] (in1) -- (dec1);
+%         \draw [arrow] (dec1) -- node[anchor=south]{(i)} (pro1);
+%         % \draw [arrow] (dec1) -- node[anchor=north]{(ii)} (pro2);
+%         \draw [arrow] (dec1) -- node[anchor=north]{(ii)
+%         % \begin{tabular}{c}
+%         %     uninformative \\[-1ex]
+%         %     prior
+%         % \end{tabular}
+%         } (pro3);
+%         \draw [arrow] (pro1) -| node[anchor=west]{\hspace{-4mm}
+%         \begin{tabular}{l}
+%             ~informative \\[-1.5ex]
+%             ~prior
+%         \end{tabular}
+%         } (pro3);
+%         % \draw [arrow] (pro2) -| node[anchor=west]{\hspace{-4mm}\vspace{-4mm}
+%         % \begin{tabular}{l}
+%         %     informative \\[-1ex]
+%         %     prior
+%         % \end{tabular}
+%         % } (pro3);
+%         \draw [arrow] (pro3) -- (out1);
+%         \draw [arrow] (out1) -- (stop);
+%     \end{tikzpicture}
+%     \caption{Recommended overall training flow}
+%     \label{fig:flowchart}
+% \end{figure*}
+
+
+% Figure~\ref{fig:flowchart} depicts the recommended overall training flow for
+% automatic controller development for underactuated robotic systems that we put
+% forward in this work. We start with a Lagrangian or a Hamiltonian model of a
+% robotic system as well as a choice of the neural network architectures that will
+% encode the closed-loop Lyapunov function from which the controller is computed
+% by taking appropriate gradients. We then select the particular training
+% framework -- if we want to base the automatic controller development on the
+% trajectories that the system generates under the current belief for the Lyapunov
+% function, we use the \textsc{NeuralPbc} approach, whereas if we want to base the
+% controller development on the satisfaction of a system of PDEs guaranteeing the
+% existence of a closed-loop Hamiltonian system with desired properties then we
+% use the \textsc{NeuralIdaPbc} approach.
+
+% This decision either leads to an initial deterministic training which gives us
+% point estimates for the Lyapunov function and the controller for the robotic
+% system or we could directly perform a Bayesian inference on the Lyapunov
+% function, in which case, we would use an appropriate uninformative prior to
+% start off the relevant algorithm. If we have performed an initial deterministic
+% controller training, then the point estimates we gather from this training may
+% and will be used as determining a prior distribution for a follow up Bayesian
+% inference.

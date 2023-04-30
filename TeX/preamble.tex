@@ -1,0 +1,148 @@
+\usepackage[table,x11names,svgnames,dvipsnames]{xcolor}
+\usepackage[export]{adjustbox}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[USenglish]{babel}
+\usepackage{booktabs}
+\usepackage{cancel}
+\usepackage[tableposition=above]{caption}
+% \usepackage{centernot}
+% \usepackage{comment}
+% \usepackage{enumitem}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+% \usepackage[letterpaper, top=1.0in, bottom=1.0in, left=1.0in, right=1.0in]{geometry}
+\RequirePackage[OT1]{fontenc}
+% \usepackage{fontspec}
+\usepackage{graphics}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+% \usepackage{ifpdf}
+% \usepackage{lastpage}
+% \usepackage{leftidx}
+\usepackage{lipsum}
+% \usepackage{mathrsfs}
+\usepackage{mathtools}
+% \usepackage{multicol}
+% \usepackage{multirow}
+\usepackage{nicefrac}
+% \usepackage{nicematrix}
+% \usepackage{pgfplots}
+\usepackage{pifont}
+% \usepackage{ragged2e}
+% \usepackage{rotating}
+% \usepackage{stmaryrd}
+\usepackage[caption=false]{subfig}
+\usepackage{tabularx}
+\usepackage{tikz}
+% \usepackage{tkz-euclide}
+% \usepackage{ctable}
+% \usetikzlibrary{matrix, arrows}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage{todonotes}
+% \usepackage{wrapfig}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=1cm, minimum
+height = 0.5cm, text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110,
+minimum height=1cm, text width=3cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=2cm, minimum height=0.8cm, text
+centered, text width=2cm, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, aspect=1.25, minimum width=2cm, minimum height=0.5cm, 
+text centered, text width=3cm, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick, ->, >=stealth]
+
+
+
+
+\makeatletter
+\newcommand{\rmnum}[1]{\romannumeral #1}
+\newcommand{\Rmnum}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\newcommand{\bmat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\pmat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\ubar}[1]{\text{\b{$#1$}}}
+\newcommand{\norm}[2]{\|{#1}\|_{{}_{#2}}}
+\newcommand{\abs}[1]{\left|{#1}\right|}
+\newcommand{\mbf}[1]{\mathbf{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\dd}{\operatorname{d}\!}
+\newcommand{\muc}[2]{\multicolumn{#1}{c}{#2}}
+\newcommand*\Eval[3]{\left.#1\right\rvert_{#2}^{#3}}
+\newcommand{\inner}[1]{\left\langle#1\right\rangle}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand{\el}[2]{\frac{\dd}{\dd t}\pd{\mc{L}}{\dot{#1}} - \pd{\mc{L}}{#1} = #2}
+\newcommand{\elk}[2]{\frac{\dd}{\dd t}\pd{\mc{L}}{\dot{#1}_k} - \pd{\mc{L}}{#1_k} = #2_k}
+\newcommand{\vectornorm}[1]{\left|\left|#1\right|\right|}
+\newcommand{\dom}[1]{\textrm{dom}\;#1}
+\newcommand{\bx}{{\bf x}}
+\newcommand{\bu}{{\bf u}}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\newcommand{\idapbc}{\textsc{IdaPbc}}
+
+% \theoremstyle{plain}
+% \newtheorem{thm}{Theorem}[section]
+% \makeatletter
+% \@addtoreset{thm}{section}
+% \makeatother
+% \newtheorem{cor}[thm]{Corollary}
+% \newtheorem{lem}[thm]{Lemma}
+% \newtheorem{claim}[thm]{Claim}
+% \newtheorem{axiom}[thm]{Axiom}
+% \newtheorem{conj}[thm]{Conjecture}
+% \newtheorem{fact}[thm]{Fact}
+% \newtheorem{hypo}[thm]{Hypothesis}
+% \newtheorem{assum}[thm]{Assumption}
+\newtheorem{prop}{Proposition}
+% \newtheorem{crit}[thm]{Criterion}
+% \theoremstyle{definition}
+% \newtheorem{defn}[thm]{Definition}
+% \newtheorem{exmp}[thm]{Example}
+\newtheorem{rem}{Remark}
+% \newtheorem{prin}[thm]{Principle}
+
+\DeclareMathOperator{\Tr}{tr}
+\newcommand\xdownarrow[1][2ex]{%
+   \mathrel{\rotatebox{90}{$\xleftarrow{\rule{#1}{0pt}}$}}
+}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\vers}{vers}
+\DeclareMathOperator{\trans}{Trans}
+\DeclareMathOperator{\rot}{Rot}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\sinc}{sinc}
+
+%% The section below needs to be put at the end of this file to make citation links work with ieeeconf.cls
+\makeatletter
+\let\NAT@parse\undefined
+\makeatother
+\usepackage{hyperref}
+\hypersetup{
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={Robust Interconnection and Damping Assignment Passivity-Based Control via Neural Bayesian Inference},    % title
+    pdfauthor={Wankun Sirichotiyakul, Nardos Ayele Ashenafi, Aykut C. Satici},     % author
+    % pdfsubject={Subject},   % subject of the document
+    % pdfcreator={Creator},   % creator of the document
+    % pdfproducer={Producer}, % producer of the document
+    % pdfkeywords={keyword1, key2, key3}, % list of keywords
+    pdfnewwindow=true,      % links in new PDF window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=magenta,          % color of internal links (change box color with linkbordercolor)
+    linkbordercolor=orange,
+    citecolor=blue,        % color of links to bibliography
+    citebordercolor=green,
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan,           % color of external links
+    urlbordercolor=blue,
+}
