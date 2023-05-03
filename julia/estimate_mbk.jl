@@ -1,4 +1,5 @@
 using LinearAlgebra
+using Statistics
 using OrdinaryDiffEq
 # using Plots
 using PyPlot
@@ -112,6 +113,9 @@ F(t) = [0 0 0 λ/Γ[1,1]*xrefddot(t) 1/Γ[1,1]*xrefddot(t);
 
 M(t) = F(t) + F(t)'
 
+res(x, t) = -θtilde(x,t)[1]*xrefddot(t) - θtilde(x,t)[2]*xrefdot(t) - θtilde(x,t)[3]*xref(t)
+β(t) = [π^2*cos(t)^2*sin(π*sin(t))+sin(t)*cos(π*sin(t)), π*cos(t)*cos(π*sin(t)), sin(π*sin(t))]
+
 indices = findall(x->x>-1e-6, Vdot.(sol.u, sol.t))
 # q(x, t) = begin
 #     if Vdot(x, t)>-0.005
@@ -123,15 +127,18 @@ indices = findall(x->x>-1e-6, Vdot.(sol.u, sol.t))
 #         return Inf
 #     end
 # end
-res(x, t) = -θtilde(x,t)[1]*xrefddot(t) - θtilde(x,t)[2]*xrefdot(t) - θtilde(x,t)[3]*xref(t)
 q = Float64[]
+Φ = Array{Array{Float64, 1}, 1}()
 for ind in indices
     t = sol.t[ind]
     mtilde = sol.u[ind][3] - m
     btilde = sol.u[ind][4] - b
     ktilde = sol.u[ind][5] - k
     push!(q, -mtilde*xrefddot(t) - btilde*xrefdot(t) - ktilde*xref(t))
+    push!(Φ, β(t))
 end
+Φ = transpose(hcat(Φ...))
+_, s, _ = svd(Φ)
 
 
 display( (mean(res.(sol.u, sol.t)), std(res.(sol.u, sol.t))) ) 
@@ -146,5 +153,3 @@ ax3.plot([0,tend], [0,0], linewidth=1, linestyle="dotted", color="k")
 ax3.tick_params(axis="both", which="major", labelsize=15)
 ax3.tick_params(axis="both", which="minor", labelsize=12)
 ax3.legend(fontsize=20)
-
-
