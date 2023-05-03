@@ -13,9 +13,9 @@ close(file)
 m, b, k = (data[4,end], data[5, end], 0.0)
 # m, b, k = (0.665, 1.2, 0.0)
 θ = [m, b, k]
-tend = data[1,end]*1/4
-A, φ = (0.3, 180*π/180)
-n_freq = 3
+tend = data[1,end]*1
+A, φ = (0.3, 0*π/180)
+n_freq = 1
 ω(t) = π*sum( (1-(k-1)/n_freq)*sin(k*t) for k in 1:n_freq )
 # ω(t) = 2*π*0.3*t
 c, λ = (0.1, 4.0)
@@ -36,13 +36,14 @@ xrefddot(t) = ForwardDiff.derivative(xrefdot, t)
 
 xtilde(x, t) = x[1] - xref(t)
 xtildedot(x, t) = x[2] - xrefdot(t)
+θtilde(x, t) = x[3:5] - θ
 
 r(x, t) = xtildedot(x, t) + λ*xtilde(x, t)
 v(x, t) = xrefdot(t) - λ*xtilde(x, t)
 a(x, t) = xrefddot(t) - λ*xtildedot(x, t)
 Y(x, t) = [a(x, t), v(x, t), x[1]]
 u(x, t) = dot(Y(x,t), x[3:5]) - c*r(x, t)
-V(x, t) = 1/2*m*r(x,t)^2 + c*λ*xtilde(x, t)^2 + 1/2*dot(x[3:5]-θ, Γ, x[3:5]-θ)
+V(x, t) = 1/2*m*r(x,t)^2 + c*λ*xtilde(x, t)^2 + 1/2*dot(θtilde(x,t), Γ, θtilde(x,t))
 Vdot(x, t) = -c*λ*λ*xtilde(x, t)^2 - c*xtildedot(x,t)^2 - b*r(x,t)^2
 
 function eom!(dx, x, p, t)
@@ -110,3 +111,40 @@ F(t) = [0 0 0 λ/Γ[1,1]*xrefddot(t) 1/Γ[1,1]*xrefddot(t);
 #         (1/Γ[1,1]-1/m)*xrefddot(t) (1/Γ[2,2]-1/m)*xrefdot(t) (1/Γ[3,3]-1/m)*xref(t) -λ/m*(b+c) -(λ+(b+c)/m)]
 
 M(t) = F(t) + F(t)'
+
+indices = findall(x->x>-1e-6, Vdot.(sol.u, sol.t))
+# q(x, t) = begin
+#     if Vdot(x, t)>-0.005
+#         t = sol.t[ind]
+#         mtilde = sol.u[ind][3]
+#         btilde = sol.u[ind][4]
+#         ktilde = sol.u[ind][5]
+#     else
+#         return Inf
+#     end
+# end
+res(x, t) = -θtilde(x,t)[1]*xrefddot(t) - θtilde(x,t)[2]*xrefdot(t) - θtilde(x,t)[3]*xref(t)
+q = Float64[]
+for ind in indices
+    t = sol.t[ind]
+    mtilde = sol.u[ind][3] - m
+    btilde = sol.u[ind][4] - b
+    ktilde = sol.u[ind][5] - k
+    push!(q, -mtilde*xrefddot(t) - btilde*xrefdot(t) - ktilde*xref(t))
+end
+
+
+display( (mean(res.(sol.u, sol.t)), std(res.(sol.u, sol.t))) ) 
+display( (mean(q), std(q)) )
+
+
+fig3 = figure("Residual", figsize=(10,6))
+fig3.clear()
+ax3 = fig3.add_subplot(111)
+ax3.plot(sol.t[indices], q, label=L"q")
+ax3.plot([0,tend], [0,0], linewidth=1, linestyle="dotted", color="k")
+ax3.tick_params(axis="both", which="major", labelsize=15)
+ax3.tick_params(axis="both", which="minor", labelsize=12)
+ax3.legend(fontsize=20)
+
+
