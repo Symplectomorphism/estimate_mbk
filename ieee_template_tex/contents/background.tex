@@ -1,0 +1,242 @@
+\section{Background}
+
+This section provides a brief summary of the technical background upon which the
+proposed learning framework is based. 
+
+
+\subsection{Passivity-Based Control}
+\label{ssec:pbc}
+
+Let $x \in \mathcal{X} \subset \mathbb{R}^{2n}$ denote the state of the robot.
+%
+The state $x$ is represented in terms of the generalized positions and momenta
+$x = (q, p)$. 
+%
+With $M \succ 0$ denoting the symmetric, positive-definite mass matrix, the
+Hamiltonian $H$ of the robot is expressed as 
+%
+\begin{equation}
+    H(q,p) = \frac{1}{2} p^\top M^{-1}(q) p + V(q),
+    \label{eq:system_hamiltonian}
+\end{equation}
+%
+where $V(q)$ represents the potential energy. The system's equations of motion
+can then be expressed as 
+%
+\begin{align}
+    \begin{split}  
+      \bmat{\dot{q} \\ \dot{p}} &= \bmat{0 & I_n \\ -I_n & 0}\bmat{\nabla_qH \\
+      \nabla_pH} + \bmat{0 \\ G(q)}u,
+      % y &= G^\top \dot{q},
+    \end{split}
+    \label{eq:hamiltonian_dynamics}
+\end{align}
+%
+where $G(q) \in \mathbb{R}^{n \times m}$ is the input matrix, $I_n$ is the
+$n \times n$ identity matrix, and $u \in \mathcal{U} \subset \mathbb{R}^m$ is
+the control input.
+%
+The system~\eqref{eq:hamiltonian_dynamics} is \textit{underactuated} if $\rank G
+= m < n$.
+
+
+
+The central idea of passivity-based control~\cite{van2000l2} is to design the
+input $u$ with the objective of imposing a desired storage function $H_d:
+\mathcal{X} \rightarrow \mathbb{R}$ on the closed-loop system, rendering it
+passive and consequently stable.
+%
+In the interconnection and damping assignment
+(\textsc{IdaPbc})~\cite{ortega2002stabilization}, the closed-loop dynamics to chosen as
+the port-controlled Hamiltonian (PCH) form:
+%
+\begin{equation}
+  \bmat{\dot{q} \\ \dot{p}}
+  =
+%   \bmat{J_d(q,p) - R_d(q,p)}
+  \bmat{0 & M^{-1}M_d \\ -M_dM^{-1} & J_2(q,p) - GK_vG^\top}
+  \bmat{\nabla_q H_d \\ \nabla_p H_d},
+  \label{eq:pch}
+\end{equation}
+%
+where $J_2 = -J_2^\top$, and the storage function $H_d$ is another Hamiltonian, which is quadratic in the
+system momenta:
+%
+\begin{equation}
+    H_d(q, p) = \frac{1}{2} p^\top M_d^{-1}(q) p + V_d(q),
+    \label{eq:desired_hamiltonian}
+\end{equation}
+%
+with $M_d(q) \succ 0$ denoting the closed-loop, positive definite mass matrix
+and $V_d: \mathbb{R}^n \to \mathbb{R} $ is the closed-loop potential energy
+function that satisfies
+%
+\begin{equation}
+  q^\star = \underset{q}{\textrm{argmin}} \; \; V_d(q).
+  \label{eq:argmin_Vd}
+\end{equation}
+%
+The control law that achieves the objective of \textsc{IdaPbc} comprises an
+energy-shaping term $u_{es}$ and a damping injection term $u_{di}$, i.e.
+%
+\begin{equation}
+    u = u_{es}(q,p) + u_{di}(q,p).
+    \label{eq:ida-pbc_control}
+\end{equation}
+%
+The energy-shaping term requires a solution to
+%
+\begin{equation}
+    Gu_{es} = \nabla_qH - M_dM^{-1} \nabla_qH_d + J_2M_d^{-1}p.
+    \label{eq:Gues}
+\end{equation}
+%
+If system is underactuated, $G$ is not invertible, and Equation~\eqref{eq:Gues}
+cannot be uniquely solved. This leads to the constraints that must be satisfied
+for any choice of $u_{es}$:
+%
+\begin{equation}
+  G^\perp \left\{ \nabla_qH - M_dM^{-1} \nabla_qH_d + J_2M_d^{-1}p \right\} = 0.
+  \label{eq:pde_main}
+\end{equation}
+%
+Equation~\eqref{eq:pde_main} is a set of nonlinear partial differential
+equations (PDE) parametrized by $M_d$, $V_d$, and $J_2$. 
+%
+The skew-symmetric matrix $J_2$ serves as a free parameter to ease obtaining a
+solution to~\eqref{eq:pde_main}.
+%
+The success of the \textsc{IdaPbc} approach hinges on the ability to solve this set of
+PDEs.
+%
+Once a solution is obtained, the energy shaping term of the control is
+%
+\begin{equation}
+  u_{es} = G^{\dagger} \left(\nabla_qH - M_dM^{-1} \nabla_qH_d + J_2M_d^{-1}p\right),
+  \label{eq:ues}
+\end{equation}
+%
+where $G^{\dagger} = \left(G^\top G\right)^{-1} G^\top$.
+%
+With $K_v \succ 0$ a user-selected gain matrix, the damping injection term is given as
+%
+\begin{equation}
+    u_{di} = -K_v G^\top \nabla_p H_d.
+    \label{eq:udi}
+\end{equation}
+
+\begin{prop}
+  The closed-loop Hamiltonian $H_d$ in \textsc{IdaPbc} is, by construction, a Lyapunov
+  function for the closed-loop system. The time-derivative of $H_d$ is
+  \begin{align*}
+      \dot{H}_d 
+      &= \left( \nabla_{q} H_d \right)^\top \dot{q} + \left( \nabla_p H_d \right)^\top \dot{p} \\
+      &= -\left( \nabla_{p} H_d \right)^\top \left(J_2 - G K_v G^\top\right) \nabla_p H_d \\
+      &\leq -\lambda_{\textrm{min}} \{ K_v \} \abs{ \left( \nabla_p H_d \right)^\top G }^2 \leq 0,
+  \end{align*}
+  where the last inequality follows from $J_2 = -J_2^\top$ and $K_v \succ 0$.
+  Therefore, as long as $V_d$ is bounded from below and the
+  conditions~\eqref{eq:argmin_Vd} and~\eqref{eq:pde_main} are satisfied,
+  $(q^\star, 0)$ is a stable equilibrium of~\eqref{eq:pch}.
+  \label{prop:lyapunov}
+\end{prop}
+
+
+
+Controllers designed using PBC techniques are based on a nominal
+dynamical model~\eqref{eq:hamiltonian_dynamics}. 
+%
+For many applications, the uncertainties in system parameters are not
+negligible. 
+%
+In this work we attempt to make rigor the controller's robustness properties by
+means of Bayesian learning, whose theory we briefly summarize in the following
+subsection.
+
+
+\subsection{Bayesian Learning}
+\label{ssec:bays}
+
+Bayesian learning is a technique that generates a stochastic model $m(x;
+\theta)$ that best fits a dataset $\mathbb{D}$ with inherent noise. 
+%
+The vector $\theta$ is a multivariate random variable that holds the parameters
+of the model and $x$ is the input.
+%
+Given a structure of the model and a prior belief $p(\theta)$ on the
+distribution of the parameters, the main task is to learn a posterior
+distribution $p(\theta \mid \mathbb{D})$ that maximizes the likelihood of the
+model generating the dataset $\mathbb{D}$~\cite{bishop2006pattern}. 
+%
+
+Researchers have explored various techniques to find the posterior distribution
+over the parameters $\theta$. 
+%
+Commonly used approaches include Markov Chain Monte Carlo (MCMC) methods, which
+learn the exact posterior distribution by collecting samples of $\theta$. 
+%
+Some MCMC techniques, such as Gibbs Sampling, collect samples of the posterior
+through random walk, while others, such as Hamiltonian Monte Carlo, follow the
+gradient of the likelihood to sample the next parameter $\theta$.
+%
+Even though, MCMC techniques learn the exact posterior, they have slow
+convergence properties for high-dimensional parameters. 
+%
+Hence, we utilize variational inference (VI), a technique that approximates the
+posterior $p(\theta \mid \mathbb{D})$ with some distribution $q(\theta;z)$ and
+learns the distribution parameters $z$. 
+%
+This gradient-based method selects the values of $z$ that maximize the evidence
+lower bound (\textsc{Elbo}), $\mathcal{L}(x, z)$, defined
+by~\cite{cohen2016bayesian}
+\begin{align}
+  \begin{split}
+  \mathcal{L}(x,z) &= \mathbb{E}_{\theta \sim q} \left[\log(p(x, \theta;z)) - \log(q(\theta;z)) \right], \\
+  p(x, \theta;z) &= p(x \mid \theta;z)p(\theta;z),
+  \end{split}
+  \label{eq:elbo}
+\end{align}
+where $p(x \mid \theta;z)$ is the likelihood function. 
+
+The power of Bayesian learning lies in its ability to build a model and make
+predictions that integrate over all uncertainties~\cite{tipping2003bayesian}.
+These predictions can be found by marginalizing the model over the
+posterior~\cite{jospin2020hands}
+\begin{equation}
+  \hat{m} = \frac{1}{N} \sum_{\theta \sim q} m(x, \theta),
+  \label{eqn:marginalization}
+\end{equation} 
+where $N$ is the number of samples drawn from $q(\theta;z)$. 
+%
+% Moreover, Bayesian frameworks can quantify how confident we are in the model
+% predictions through the variance of the predictive distribution, $p(m \mid x,
+% \mathbb{D})$. The variance of $p(m|x, \mathbb{D})$ is given
+% by~\cite{jospin2020hands}
+% \begin{equation}
+%   \Sigma_{m \mid x,\mathbb{D}} = \frac{1}{N-1} \sum_{\theta \sim q} \left\| (m(x,\theta) - \hat{m}) \right\| ^2.
+%   \label{eqn:predictive_variance}
+% \end{equation}
+
+
+In this work, we leverage the universal approximation capabilities of BNN to
+parametrize the stochastic model $m(x;\theta)$.
+%
+In the BNN architecture, the weights and biases of the neural network are
+samples drawn from a posterior probability distribution, which is inferred
+through Bayesian learning techniques~\cite{jospin2020hands}. 
+%
+There are many advantages to learning the distribution of the neural net
+parameters over point estimates; for instance, Bayesian learning can infer a
+model and characterize uncertainty of predictions with small amount of
+data~\cite{jospin2020hands}. 
+%
+Prior knowledge can be explicitly injected into the Bayesian training in the form of 
+prior distribution.
+%
+Moreover, the use of prior distribution behaves like a regularization term
+that prevents the model from overfitting to the training
+data~\cite{bishop2006pattern}. 
+%
+On the flip side, it is more complicated and computationally expensive to learn
+probability distributions than point estimates.
+
